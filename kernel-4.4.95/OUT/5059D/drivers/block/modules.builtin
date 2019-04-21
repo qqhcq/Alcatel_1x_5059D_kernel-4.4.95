@@ -1,0 +1,2 @@
+kernel/drivers/block/loop-mtk.ko
+kernel/drivers/block/zram/zram.ko
