@@ -1,0 +1,80 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/cewatkins/Alcatel_1x_5059D_kernel-4.4.95/blob/master/rta.ipy\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lIYdn1woOS1n",
+        "outputId": "b7e2fa3d-86ca-40d5-853e-57e0cded9239"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Hello world\n"
+          ]
+        }
+      ],
+      "source": [
+        "# prompt: create a rta analyzer of a .wav file\n",
+        "\n",
+        "!pip install pydub\n",
+        "!pip install ffmpeg-python\n",
+        "\n",
+        "import pydub\n",
+        "from pydub import AudioSegment\n",
+        "from pydub.silence import split_on_silence\n",
+        "\n",
+        "# Open the audio file\n",
+        "sound = AudioSegment.from_wav(\"audio.wav\")\n",
+        "\n",
+        "# Split the audio file into chunks\n",
+        "chunks = split_on_silence(sound,\n",
+        "    # must be silent for at least half a second\n",
+        "    min_silence_len=500,\n",
+        "    # consider it silent if quieter than -14 dBFS\n",
+        "    silence_thresh=-14\n",
+        ")\n",
+        "\n",
+        "# Create a Real Time Analyzer object\n",
+        "analyzer = pydub.effects.low_pass_filter(sound, 1000)\n",
+        "\n",
+        "# Process each chunk\n",
+        "for chunk in chunks:\n",
+        "    # Apply the analyzer to the chunk\n",
+        "    processed_chunk = analyzer(chunk)\n",
+        "\n",
+        "    # Do something with the processed chunk, such as save it to a file\n",
+        "    processed_chunk.export(\"processed_chunk.wav\", format=\"wav\")\n"
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "scratchpad",
+      "provenance": [],
+      "toc_visible": true,
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
